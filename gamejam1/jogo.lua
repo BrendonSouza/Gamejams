@@ -1,18 +1,21 @@
 Jogo = Classe:extend()
-require "cowboy"
-require "cowboy2"
-
+--import cenario
+require "cenario"
+require "personagem"
 function Jogo:new()
-  cowboy = Cowboy()
-  cowboy2 = Cowboy2()
+    self.cenario = Cenario()
+    self.player1 = Personagem(30,350,1)
+    self.player2 = Personagem(470,350,2)
 end
 
 function Jogo:update(dt)
-  cowboy:update(dt)
-  cowboy2:update(dt)
+    self.cenario:update(dt)
+    self.player1:update(dt)
+    self.player2:update(dt)
 end
 
 function Jogo:draw()
-  cowboy:draw()
-  cowboy2:draw()
+    self.cenario:draw()
+    self.player1:draw()
+    self.player2:draw()
 end

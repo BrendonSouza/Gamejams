@@ -1,14 +1,23 @@
 Tiro = Classe:extend()
 
-function Tiro:new(x, y)
-  self.x = x
-  self.y = y
+function Tiro:new(x,y,player)
+    self.x = x
+    self.y = y
+    self.player = player
+    self.sprite = love.graphics.newImage("sprites/tiro.png")
+
 end
 
-function Tiro:update(dt, cowboyX)
-    self.x = self.x + 100 * dt
-  end
+function Tiro:update(dt)
+    if(self.player == 1) then
+        self.x = self.x + 5
+    else
+        self.x = self.x - 5
+    end
+end
 
 function Tiro:draw()
-  love.graphics.circle("fill", self.x, self.y, 10)
+   
+    love.graphics.draw(self.sprite, self.x, self.y)
+  
 end

@@ -1,4 +1,4 @@
-Classe = require "classic"
+Classe = require "libs/classic"
 
 require "jogo"
 
