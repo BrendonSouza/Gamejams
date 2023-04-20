@@ -20,7 +20,7 @@ function Personagem:new(x,y,player)
     self.frames.walk = {}
     self.frames.shoot = {}
     self.frameAtual = 1
-    self.spriteAtual = "idle"
+    self.spriteAtual = "walk"
     self.tempo=0
     self.tiros = {}
     self.colidiu = "não"
@@ -74,6 +74,13 @@ function Personagem:update(dt)
         end
         if love.keyboard.isDown("right") then
             self.x = self.x + 1
+        end
+        if(love.keyboard.isDown("rctrl")) and  #self.tiros <= 0 then
+            self.spriteAtual = "shoot"
+            self.frameAtual = 1
+            self.tempo = 0
+            table.insert(self.tiros, Tiro(self.x + 30, self.y + 20, self.player))
+
         end
     end
 
@@ -151,7 +158,7 @@ function animaSprites(self,dt)
         self.frameAtual = self.frameAtual + 1
         if(self.frameAtual >tam) then
             self.frameAtual = 1
-            self.spriteAtual = "idle"
+            --self.spriteAtual = "idle"
         end
     end
 end
@@ -174,17 +181,22 @@ end
 
 
 function Personagem:ColideComBordasDaTela()
-    if(self.x < 0) then
-        self.x = 0
+    if(self.x <= 20) then
+        self.x = 20
+
     end
-    if(self.x > 800 - 30) then
-        self.x = 800 - 30
+    if(self.x > 740) then
+        self.x = 700
+        self.spriteAtual= "idle"
     end
     if(self.y < 490) then
         self.y = 490
+       
+
     end
     if(self.y > 550) then
         self.y = 550
+
     end
   
 end
