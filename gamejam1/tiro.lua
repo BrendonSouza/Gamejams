@@ -4,19 +4,20 @@ function Tiro:new(x,y,player)
     self.x = x
     self.y = y
     self.player = player
+    self.raio = 5
 end
 
 function Tiro:update(dt)
     if(self.player == 1) then
-        self.x = self.x + 5
+        self.x = self.x + 15
     else
-        self.x = self.x - 5
+        self.x = self.x - 15
     end
 end
 
 function Tiro:draw()
    
-    love.graphics.circle("fill", self.x, self.y, 5)
+    love.graphics.circle("fill", self.x, self.y, self.raio)
 
 end
 

@@ -23,6 +23,8 @@ function Personagem:new(x,y,player)
     self.spriteAtual = "idle"
     self.tempo=0
     self.tiros = {}
+    self.colidiu = "não"
+    self.pontos = 0
 
     carregaSprites(self)
 
@@ -33,18 +35,20 @@ function Personagem:update(dt)
     animaSprites(self,dt)
     if(self.player == 1) then
         if love.keyboard.isDown("w") then
-            self.y = self.y - 1
+            self.y = self.y - 0.5
             self.spriteAtual = "idle"
         end
         if love.keyboard.isDown("s") then
-            self.y = self.y + 1
+            self.y = self.y + 0.5
+            self.spriteAtual = "idle"
         end
         if love.keyboard.isDown("a") then
-            self.x = self.x - 1
+            self.x = self.x - 0.5
+            
            
         end
         if love.keyboard.isDown("d") then
-            self.x = self.x + 1
+            self.x = self.x + 0.5
         end
 
         if(love.keyboard.isDown("space")) and  #self.tiros <= 0 then
@@ -57,11 +61,13 @@ function Personagem:update(dt)
     end
     if(self.player == 2) then
         if love.keyboard.isDown("up") then
-            self.y = self.y - 1
+            self.y = self.y - 0.5
+            self.spriteAtual = "idle"
             
         end
         if love.keyboard.isDown("down") then
-            self.y = self.y + 1
+            self.y = self.y + 0.5
+            self.spriteAtual = "idle"
         end
         if love.keyboard.isDown("left") then
             self.x = self.x - 1
@@ -73,9 +79,8 @@ function Personagem:update(dt)
 
     for _, tiro in pairs(self.tiros) do
         tiro:update(dt)
-
         if not tiro:estaNaTela() then
-            table.remove(self.tiros, _)
+            table.remove(self.tiros, _)         
         end
     end
 
@@ -146,6 +151,7 @@ function animaSprites(self,dt)
         self.frameAtual = self.frameAtual + 1
         if(self.frameAtual >tam) then
             self.frameAtual = 1
+            self.spriteAtual = "idle"
         end
     end
 end
@@ -163,7 +169,7 @@ function Personagem:draw()
     for _, tiro in pairs(self.tiros) do
         tiro:draw()
     end
-    love.graphics.print(self.y,self.x,self.y)
+    love.graphics.print("pontos =  "..self.pontos,self.x,self.y-15)
 end
 
 
