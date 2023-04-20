@@ -9,6 +9,7 @@ function Personagem:new(x,y,player)
     if(self.player == 1) then
         self.spriteWalk = love.graphics.newImage("sprites/player1walk.png")
         self.spriteIdle = love.graphics.newImage("sprites/player1idle.png")
+        
     else
         self.spriteWalk = love.graphics.newImage("sprites/player2walk.png")
         self.spriteIdle = love.graphics.newImage("sprites/player2idle.png")
@@ -22,6 +23,7 @@ function Personagem:new(x,y,player)
     self.spriteAtual = "idle"
     self.tempo=0
     self.tiros = {}
+
     carregaSprites(self)
 
 end
@@ -32,6 +34,7 @@ function Personagem:update(dt)
     if(self.player == 1) then
         if love.keyboard.isDown("w") then
             self.y = self.y - 1
+            self.spriteAtual = "idle"
         end
         if love.keyboard.isDown("s") then
             self.y = self.y + 1
@@ -44,7 +47,7 @@ function Personagem:update(dt)
             self.x = self.x + 1
         end
 
-        if(love.keyboard.isDown("space")) then
+        if(love.keyboard.isDown("space")) and  #self.tiros <= 0 then
             self.spriteAtual = "shoot"
             self.frameAtual = 1
             self.tempo = 0
@@ -55,6 +58,7 @@ function Personagem:update(dt)
     if(self.player == 2) then
         if love.keyboard.isDown("up") then
             self.y = self.y - 1
+            
         end
         if love.keyboard.isDown("down") then
             self.y = self.y + 1
@@ -66,6 +70,18 @@ function Personagem:update(dt)
             self.x = self.x + 1
         end
     end
+
+    for _, tiro in pairs(self.tiros) do
+        tiro:update(dt)
+
+        if not tiro:estaNaTela() then
+            table.remove(self.tiros, _)
+        end
+    end
+
+    self.ColideComBordasDaTela(self)
+
+   
 end
 
 
@@ -123,7 +139,6 @@ function animaSprites(self,dt)
         tam = #self.frames.walk
     elseif(self.spriteAtual == "shoot") then
         tam = #self.frames.shoot
-        print(tam)
     end
     self.tempo = self.tempo + dt
     if(self.tempo > 0.1) then
@@ -137,8 +152,6 @@ end
 
 
 function Personagem:draw()
-    love.graphics.push()
-    love.graphics.scale(1.5, 1.5)
 
     if(self.spriteAtual == "idle") then
         love.graphics.draw(self.spriteIdle, self.frames.idle[self.frameAtual], self.x, self.y)
@@ -147,6 +160,27 @@ function Personagem:draw()
     elseif(self.spriteAtual == "shoot") then
         love.graphics.draw(self.spriteIdle, self.frames.shoot[self.frameAtual], self.x, self.y)
     end
-    love.graphics.pop()
-
+    for _, tiro in pairs(self.tiros) do
+        tiro:draw()
+    end
+    love.graphics.print(self.y,self.x,self.y)
 end
+
+
+function Personagem:ColideComBordasDaTela()
+    if(self.x < 0) then
+        self.x = 0
+    end
+    if(self.x > 800 - 30) then
+        self.x = 800 - 30
+    end
+    if(self.y < 490) then
+        self.y = 490
+    end
+    if(self.y > 550) then
+        self.y = 550
+    end
+  
+end
+
+

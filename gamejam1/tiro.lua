@@ -4,8 +4,6 @@ function Tiro:new(x,y,player)
     self.x = x
     self.y = y
     self.player = player
-    self.sprite = love.graphics.newImage("sprites/tiro.png")
-
 end
 
 function Tiro:update(dt)
@@ -18,6 +16,14 @@ end
 
 function Tiro:draw()
    
-    love.graphics.draw(self.sprite, self.x, self.y)
-  
+    love.graphics.circle("fill", self.x, self.y, 5)
+
+end
+
+function Tiro:estaNaTela()
+    if(self.x > 0 and self.x < 780) then
+        return true
+    else
+        return false
+    end
 end
