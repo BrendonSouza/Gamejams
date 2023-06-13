@@ -29,19 +29,21 @@ end
 function Jogo:detectaColisaoComPlayers()
     if (self.bola.x > self.player2.x and  self.bola.x < self.player2.x +self.player2.width and self.bola.y > self.player2.y and  self.bola.y < self.player2.y +self.player2.height)  then
         self.bola.x= self.player2.x + self.player2.width
+        self.bola.curva = false
+
         if (self.bola.direcao.y + self.player2.direcao)^2 ~= 4  then
             self.bola.direcao.y = self.player2.direcao
         end
-        if(self.player2.curve)then
-            print("xd curva")
+        if self.player2.curve then
+            self.bola.curva = true
+            self.bola.direcaoPlayer = self.player2.direcao
+            self.bola.velocidade_rotacao = 1.5  -- Ajuste a velocidade de rotação conforme necessário
         end
-
         self.bola.direcao.x = -(self.bola.direcao.x)
         
-        print(self.bola.direcao.y, self.player2.direcao)
     elseif (self.bola.x > self.player1.x and  self.bola.x < self.player1.x +self.player1.width and self.bola.y > self.player1.y and  self.bola.y < self.player1.y +self.player1.height)or (self.bola.x > self.player1.x and  self.bola.x < self.player1.x +self.player1.width and self.bola.y > self.player1.y and  self.bola.y < self.player1.y +self.player1.height) then
         self.bola.y= self.player1.y + self.player1.height
-
+        self.bola.curva = false
         if (self.bola.direcao.x + self.player1.direcao)^2 ~= 4  then
             self.bola.direcao.x = self.player1.direcao
         end
@@ -49,13 +51,17 @@ function Jogo:detectaColisaoComPlayers()
         self.bola.direcao.y = -(self.bola.direcao.y)
     elseif (self.bola.x > self.player3.x and  self.bola.x < self.player3.x +self.player3.width and self.bola.y > self.player3.y and  self.bola.y < self.player3.y +self.player3.height)or (self.bola.x > self.player3.x and  self.bola.x < self.player3.x +self.player3.width and self.bola.y > self.player3.y and  self.bola.y < self.player3.y +self.player3.height) then
         self.bola.y= self.player3.y - self.player3.height
+        self.bola.curva = false
 
         if (self.bola.direcao.x + self.player3.direcao)^2 ~= 4  then
             self.bola.direcao.x = self.player3.direcao
         end
+        print(self.bola.direcao.y, self.player3.direcao)
 
         self.bola.direcao.y = -(self.bola.direcao.y)
     elseif (self.bola.x > self.player4.x and  self.bola.x < self.player4.x +self.player4.width and self.bola.y > self.player4.y and  self.bola.y < self.player4.y +self.player4.height) then
+        self.bola.curva = false
+
         self.bola.x= self.player4.x - self.player4.width
         if (self.bola.direcao.y + self.player4.direcao)^2 ~= 4  then
             self.bola.direcao.y = self.player4.direcao
