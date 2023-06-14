@@ -9,7 +9,6 @@ function love.load()
     require "bola"
     require "player"
 
-
     jogo = Jogo()
 
 
