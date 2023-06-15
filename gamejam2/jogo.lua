@@ -52,7 +52,18 @@ function Jogo:draw()
         self.bola:draw()
     end
     if(self.statusGame == "fim") then
-        love.graphics.print("Fim de Jogo", 400,300)
+        -- print ffim de jogo e vencedor
+        love.graphics.print("Fim de jogo", 300, 300)
+        if(self.player1.pontos >= 5) then
+            love.graphics.print("Jogador 1 venceu", 300, 350)
+        elseif(self.player2.pontos >= 5) then
+            love.graphics.print("Jogador 2 venceu", 300, 350)
+        elseif(self.player3.pontos >= 5) then
+            love.graphics.print("Jogador 3 venceu", 300, 350)
+        elseif(self.player4.pontos >= 5) then
+            love.graphics.print("Jogador 4 venceu", 300, 350)
+        end
+
     end
   
     
