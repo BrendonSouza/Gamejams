@@ -52,7 +52,8 @@ function Player:new(player_number)
   self.animations.right = Anim8.newAnimation(self.grid('1-2', 4), 0.2)
   self.animations.left = Anim8.newAnimation(self.grid:getFrames('1-2', 3), 0.2)
   self.isMoving = false
-  self.anim = self.animations.right
+  self.anim = self.animations.left
+  self.anim:gotoFrame(1)
 
 end
 
@@ -68,12 +69,12 @@ function Player:update(dt)
       self.y = self.y+(-self.aceleracao)*dt
       self.direcao = -1
       self.anim = self.animations.up
-      -- self.isMoving = true
+      self.isMoving = true
     elseif love.keyboard.isDown("s") then
         self.y = self.y+(self.aceleracao)*dt
         self.direcao = 1
         self.anim = self.animations.down
-        -- self.isMoving = true
+        self.isMoving = true
     end
 
   else
@@ -88,18 +89,24 @@ function Player:update(dt)
         self.anim = self.animations.right
         self.isMoving = true
     end
-    if self.isMoving == false then
-      self.anim:gotoFrame(1)
-    end
-    
   end
+
+  if self.isMoving == false then
+    self.anim:gotoFrame(1)
+  end
+
   self.anim:update(dt)
 end
 
 function Player:draw()
   -- love.graphics.rectangle("fill",self.x,self.y,self.width,self.height)
   love.graphics.draw(self.sprite, self.x, self.y)
-  self.anim:draw(self.spriteSheet, self.x, self.y, nil, 0.4)
-
-  love.graphics.print(self.pontos,self.x,self.y-20)
+  if(self.player_number ==1) then
+    self.anim:draw(self.spriteSheet, self.x+10, self.y-60, nil, 0.3)
+  elseif (self.player_number ==2) then
+    self.anim:draw(self.spriteSheet, self.x-50, self.y, nil, 0.3)
+  else
+    self.anim:draw(self.spriteSheet, self.x, self.y, nil, 0.3)
+  end
+  love.graphics.print(tostring(self.isMoving),self.x,self.y-20)
 end
