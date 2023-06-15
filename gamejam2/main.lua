@@ -6,6 +6,8 @@ function love.load()
     Classe = require "libs/classic"
     Vetor = require "libs/vetor"
     Anim8 = require "libs/anim8"
+    Font = love.graphics.newFont("assets/Minecraft.ttf", 50)
+
     require "jogo"
     require "bola"
     require "player"

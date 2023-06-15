@@ -54,14 +54,14 @@ function Player:new(player_number)
   self.isMoving = false
   self.anim = self.animations.left
   self.anim:gotoFrame(1)
-
+  self.teste="não"
 end
 
 function Player:update(dt)
   self.isMoving = false
   self.direcao = 0    
   self.curve = false
-  if self.player_number % 2 == 0 then
+  if self.player_number == 2 then
     if love.keyboard.isDown("space") then
       self.curve =true
     end
@@ -76,20 +76,59 @@ function Player:update(dt)
         self.anim = self.animations.down
         self.isMoving = true
     end
-
-  else
-    if love.keyboard.isDown("a") then
-        self.x = self.x-self.aceleracao*dt
+  elseif self.player_number == 4 then
+      if love.keyboard.isDown("rctrl") then
+        self.curve =true
+      end
+    if love.keyboard.isDown("up") then
+      self.y = self.y+(-self.aceleracao)*dt
+      self.direcao = -1
+      self.anim = self.animations.up
+      self.isMoving = true
+    elseif love.keyboard.isDown("down") then
+        self.y = self.y+(self.aceleracao)*dt
+        self.direcao = 1
+        self.anim = self.animations.down
+        self.isMoving = true
+    end
+  elseif self.player_number == 1 then
+    local joystickX = self.joysticks[1]:getGamepadAxis("leftx")
+    local buttonA = self.joysticks[1]:isGamepadDown("a")
+        if(buttonA) then
+          self.curve =true
+        end
+      if joystickX < -0.5 then
+        self.x = self.x+(-self.aceleracao)*dt
         self.direcao = -1
         self.anim = self.animations.left
         self.isMoving = true
-    elseif love.keyboard.isDown("d") then
-        self.x = self.x+self.aceleracao*dt
-        self.direcao = 1
-        self.anim = self.animations.right
-        self.isMoving = true
+      elseif joystickX > 0.5 then
+          self.x = self.x+(self.aceleracao)*dt
+          self.direcao = 1
+          self.anim = self.animations.right
+          self.isMoving = true
+      end   
+    elseif self.player_number == 3 then
+      local joystickX = self.joysticks[2]:getGamepadAxis("leftx")
+      local buttonA = self.joysticks[2]:isGamepadDown("a")
+          if(buttonA) then
+            self.curve =true
+          end
+        if joystickX < -0.5 then
+          self.x = self.x+(-self.aceleracao)*dt
+          self.direcao = -1
+          self.anim = self.animations.left
+          self.isMoving = true
+        elseif joystickX > 0.5 then
+            self.x = self.x+(self.aceleracao)*dt
+            self.direcao = 1
+            self.anim = self.animations.right
+            self.isMoving = true
+        end   
     end
-  end
+
+ 
+  
 
   if self.isMoving == false then
     self.anim:gotoFrame(1)
@@ -108,5 +147,5 @@ function Player:draw()
   else
     self.anim:draw(self.spriteSheet, self.x, self.y, nil, 0.3)
   end
-  love.graphics.print(tostring(self.isMoving),self.x,self.y-20)
+  -- love.graphics.print(self.teste,self.x,self.y-20)
 end

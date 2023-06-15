@@ -11,14 +11,15 @@ function Jogo:new()
     self.bg = love.graphics.newImage("assets/mapa.png")
     self.timer = 120
     self.count =0
+    self.font = love.graphics.newFont("assets/Minecraft.ttf", 20)
 end
 
 function Jogo:update(dt)
+    self.player1:update(dt)
+    self.player2:update(dt)
+    self.player3:update(dt)
+    self.player4:update(dt)
     if self.statusGame == "jogando" then
-        self.player1:update(dt)
-        self.player2:update(dt)
-        self.player3:update(dt)
-        self.player4:update(dt)
         self.bola:update(dt)
         self:detectaColisaoComAsParedes()
         self:detectaColisaoComPlayers()
@@ -28,7 +29,7 @@ function Jogo:update(dt)
     if(self.statusGame =="goal") then
         self.count = self.count + dt
         self.bola:reset()
-        if(self.count > 2) then
+        if(self.count > 1) then
             self.statusGame = "jogando"
             self.count = 0
         end
@@ -37,16 +38,11 @@ function Jogo:update(dt)
         self.statusGame = "fim"
     end
 
-    if(self.statusGame == "fim") then
-        self.count = self.count + dt
-        if(self.count > 2) then
-            love.event.quit()
-        end
-    end
 end
 
 
 function Jogo:draw()
+    love.graphics.setFont(self.font)
     love.graphics.draw(self.bg, 0, 0)
     self.player1:draw()
     self.player2:draw()
@@ -55,9 +51,16 @@ function Jogo:draw()
     if self.statusGame == "jogando" then
         self.bola:draw()
     end
-    if self.statusGame == "goal" then
-        love.graphics.print("GOAL", LARGURA_TELA/2, ALTURA_TELA/2)
+    if(self.statusGame == "fim") then
+        love.graphics.print("Fim de Jogo", 400,300)
     end
+  
+    
+        love.graphics.print(self.player1.pontos, 300, 50)
+        love.graphics.print(self.player2.pontos, 100, 200)
+        love.graphics.print(self.player3.pontos, 300, 500)
+        love.graphics.print(self.player4.pontos, 700, 200)
+
 end
 
 function Jogo:detectaColisaoComPlayers()
@@ -83,6 +86,11 @@ function Jogo:detectaColisaoComPlayers()
         if (self.bola.direcao.x + self.player1.direcao)^2 ~= 4  then
             self.bola.direcao.x = self.player1.direcao
         end
+        if self.player1.curve then
+            self.bola.curva = true
+            self.bola.direcaoPlayer = self.player1.direcao
+            self.bola.velocidade_rotacao = 1.9
+        end
 
         self.bola.direcao.y = -(self.bola.direcao.y)
     elseif (self.bola.x > self.player3.x and  self.bola.x < self.player3.x +self.player3.width and self.bola.y > self.player3.y and  self.bola.y < self.player3.y +self.player3.height)or (self.bola.x > self.player3.x and  self.bola.x < self.player3.x +self.player3.width and self.bola.y > self.player3.y and  self.bola.y < self.player3.y +self.player3.height) then
@@ -93,8 +101,12 @@ function Jogo:detectaColisaoComPlayers()
         if (self.bola.direcao.x + self.player3.direcao)^2 ~= 4  then
             self.bola.direcao.x = self.player3.direcao
         end
-        print(self.bola.direcao.y, self.player3.direcao)
 
+        if self.player3.curve then
+            self.bola.curva = true
+            self.bola.direcaoPlayer = self.player3.direcao
+            self.bola.velocidade_rotacao = 1.9
+        end
         self.bola.direcao.y = -(self.bola.direcao.y)
     elseif (self.bola.x > self.player4.x and  self.bola.x < self.player4.x +self.player4.width and self.bola.y > self.player4.y and  self.bola.y < self.player4.y +self.player4.height) then
         self.bola.curva = false
@@ -105,6 +117,11 @@ function Jogo:detectaColisaoComPlayers()
             self.bola.direcao.y = self.player4.direcao
         end
 
+        if self.player4.curve then
+            self.bola.curva = true
+            self.bola.direcaoPlayer = self.player4.direcao
+            self.bola.velocidade_rotacao = 1.9
+        end
         self.bola.direcao.x = -(self.bola.direcao.x)
 
     end
@@ -138,42 +155,65 @@ function  Jogo:detectaPonto()
             self.statusGame = "goal"
             if self.bola.lastPlayerTouched == 1 then
                 self.player1.pontos = self.player1.pontos + 1
+                if (self.player1.pontos == 5) then
+                    self.vencedor ="Player 1"
+                end
                 self.bola.statusBola ="scored"
-
+                self.bola.lastPlayerTouched = 0
             end
             if self.bola.lastPlayerTouched == 2 then
                 self.player2.pontos = self.player2.pontos + 1
+                if(self.player2.pontos == 5) then
+                    self.vencedor ="Player 2"
+                end
                 self.bola.statusBola ="scored"
-
+                self.bola.lastPlayerTouched = 0
             end
             if self.bola.lastPlayerTouched == 3 then
                 self.player3.pontos = self.player3.pontos + 1
+                if(self.player3.pontos == 5) then
+                    self.vencedor ="Player 3"
+                end
                 self.bola.statusBola ="scored"
-
+                self.bola.lastPlayerTouched = 0
             end
             if self.bola.lastPlayerTouched == 4 then
                 self.player4.pontos = self.player4.pontos + 1
+                if(self.player4.pontos == 5) then
+                    self.vencedor ="Player 4"
+                end
                 self.bola.statusBola ="scored"
-
+                self.bola.lastPlayerTouched = 0
             end
         end
     end
+ 
+    
 
 end
 
 function Jogo:detectaColisaoPlayersParedes()
-    if self.player1.x < 250 or self.player3.x <250 then
+    if self.player1.x < 250 then
         self.player1.x = 250
-        self.player3.x = 250
-    elseif self.player1.x + self.player1.width > 550 or self.player1.x + self.player3.width > 550 then
+    elseif self.player1.x + self.player1.width > 550 then
         self.player1.x = 550 - self.player1.width
+    end
+
+    if self.player3.x <250 then
+        self.player3.x = 250
+    elseif  self.player3.x + self.player3.width>550 then
         self.player3.x = 550 - self.player3.width
-    end  
-    if self.player2.y < 150 or  self.player4.y < 150 then
+    end
+
+    if self.player2.y < 150 then
         self.player2.y = 150
-        self.player4.y = 150
-    elseif self.player2.y + self.player2.height > 450 or  self.player4.y + self.player4.height > 450 then
+    elseif self.player2.y + self.player2.height > 450 then
         self.player2.y = 450 - self.player2.height
+    end
+
+    if self.player4.y < 150 then
+        self.player4.y = 150
+    elseif self.player4.y + self.player4.height > 450 then
         self.player4.y = 450 - self.player4.height
     end
 
