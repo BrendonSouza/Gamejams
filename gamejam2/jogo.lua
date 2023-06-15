@@ -8,7 +8,7 @@ function Jogo:new()
     self.bolas = {}
     self.bola =  Bola()
     self.statusGame = "jogando"
-    self.bg = love.graphics.newImage("assets/mapa.jpg")
+    self.bg = love.graphics.newImage("assets/mapa.png")
     self.timer = 120
     self.count =0
 end

@@ -11,35 +11,53 @@ function Player:new(player_number)
     self.curve = false
     self.direcao = 0
     self.joysticks = love.joystick.getJoysticks()
-    if player_number == 1 then
-        self.width = 100
-        self.height = 20
+    self.animations = {}
 
+    if player_number == 1 then
+        self.width = 96
+        self.height = 20
+        self.sprite = love.graphics.newImage("assets/fence-hor.png")
         self.x = LARGURA_TELA / 2 - self.width / 2
         self.y = 130
+        self.spriteSheet = love.graphics.newImage("assets/NPC12.png")
+
     elseif player_number == 2 then
         self.width = 20
-        self.height = 100
-        
+        self.height = 96
+        self.sprite = love.graphics.newImage("assets/fence-vert.png")
+        self.spriteSheet = love.graphics.newImage("assets/NPC22.png")
         self.x = 230
         self.y = ALTURA_TELA / 2 - self.height / 2
     elseif player_number == 3 then
-      self.width = 100
+      self.width = 96
       self.height = 20
+      self.sprite = love.graphics.newImage("assets/fence-hor.png")
+      self.spriteSheet = love.graphics.newImage("assets/NPC31.png")
 
       self.x = LARGURA_TELA / 2 - self.width / 2
       self.y = ALTURA_TELA - 150
   elseif player_number == 4 then
     self.width = 20
-    self.height = 100
-    
+    self.height = 96
+    self.sprite = love.graphics.newImage("assets/fence-vert.png")
+    self.spriteSheet = love.graphics.newImage("assets/NPC31.png")
+
     self.x = LARGURA_TELA -self.width-230
     self.y = ALTURA_TELA / 2 - self.height / 2
   end
+  self.grid = Anim8.newGrid(250, 250, self.spriteSheet:getWidth(), self.spriteSheet:getHeight())
+
+  self.animations.up = Anim8.newAnimation(self.grid('1-4', 2), 0.2)
+  self.animations.down = Anim8.newAnimation(self.grid('1-4', 1), 0.2)
+  self.animations.right = Anim8.newAnimation(self.grid('1-2', 4), 0.2)
+  self.animations.left = Anim8.newAnimation(self.grid:getFrames('1-2', 3), 0.2)
+  self.isMoving = false
+  self.anim = self.animations.right
 
 end
 
 function Player:update(dt)
+  self.isMoving = false
   self.direcao = 0    
   self.curve = false
   if self.player_number % 2 == 0 then
@@ -49,25 +67,39 @@ function Player:update(dt)
     if love.keyboard.isDown("w") then
       self.y = self.y+(-self.aceleracao)*dt
       self.direcao = -1
+      self.anim = self.animations.up
+      -- self.isMoving = true
     elseif love.keyboard.isDown("s") then
         self.y = self.y+(self.aceleracao)*dt
         self.direcao = 1
+        self.anim = self.animations.down
+        -- self.isMoving = true
     end
 
   else
     if love.keyboard.isDown("a") then
         self.x = self.x-self.aceleracao*dt
         self.direcao = -1
+        self.anim = self.animations.left
+        self.isMoving = true
     elseif love.keyboard.isDown("d") then
         self.x = self.x+self.aceleracao*dt
         self.direcao = 1
+        self.anim = self.animations.right
+        self.isMoving = true
+    end
+    if self.isMoving == false then
+      self.anim:gotoFrame(1)
     end
     
   end
-
+  self.anim:update(dt)
 end
 
 function Player:draw()
-  love.graphics.rectangle("fill",self.x,self.y,self.width,self.height)
+  -- love.graphics.rectangle("fill",self.x,self.y,self.width,self.height)
+  love.graphics.draw(self.sprite, self.x, self.y)
+  self.anim:draw(self.spriteSheet, self.x, self.y, nil, 0.4)
+
   love.graphics.print(self.pontos,self.x,self.y-20)
 end

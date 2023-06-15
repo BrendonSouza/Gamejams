@@ -5,6 +5,7 @@ function love.load()
     love.window.setMode(LARGURA_TELA, ALTURA_TELA, {resizable = false})
     Classe = require "libs/classic"
     Vetor = require "libs/vetor"
+    Anim8 = require "libs/anim8"
     require "jogo"
     require "bola"
     require "player"
