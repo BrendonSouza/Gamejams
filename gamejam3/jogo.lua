@@ -21,6 +21,9 @@ function Jogo:update(dt)
 
     mapa:update(dt)
     p1:update(dt)
+    if(tower) then
+        tower:update(dt)
+    end
 end
 
 
@@ -50,5 +53,3 @@ end
 function requestPath ()
     return Lua_star:find(mapa.largura, mapa.altura, start, goal, positionIsOpenFunc, false, true)
 end
-
-

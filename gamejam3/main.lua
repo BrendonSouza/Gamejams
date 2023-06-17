@@ -10,6 +10,7 @@ function love.load()
     require "jogo"
     require "inimigo"
     require "torre"
+    require "tiro"
 
   
     jogo = Jogo()
