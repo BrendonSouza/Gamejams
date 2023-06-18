@@ -1,7 +1,7 @@
 Personagem = Classe:extend()
 
 function Personagem:new()
-    self.posicao = Vetor(-1,8)
+    self.posicao = self:sorteiaPosicao()
     self.pos_path = 0
     self.direcao = Vetor()
     self.velocidade = 4
@@ -30,5 +30,24 @@ function Personagem:update(dt)
 end
 
 function Personagem:draw()
-    love.graphics.rectangle("fill", (self.posicao.x-1)*64, (self.posicao.y-1)*64, 64,64)
+    -- love.graphics.setColor(0, 0, 255)
+    print(#path)
+
+    if mapa.area[self.posicao.y-1][self.posicao.x] == TERRA then
+        love.graphics.rectangle("fill", ((self.posicao.x-1)*64)-32, ((self.posicao.y-1)*64)-32, 64, 64)
+    elseif mapa.area[self.posicao.y+1][self.posicao.x] == TERRA then
+        love.graphics.rectangle("fill", ((self.posicao.x-1)*64)-32, ((self.posicao.y-1)*64)+32, 64, 64)
+    else
+        love.graphics.rectangle("fill", ((self.posicao.x-1)*64)+32, ((self.posicao.y-1)*64), 64, 64)
+    end
+    -- love.graphics.rectangle("fill", (self.posicao.x-1)*64, (self.posicao.y-1)*64, 64,64)
+end
+
+function Personagem:sorteiaPosicao()
+    return Vetor(math.random(-1,-10), 8)
+end
+
+
+function Personagem:centralizaPersonagem()
+    
 end
