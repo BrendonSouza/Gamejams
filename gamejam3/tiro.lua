@@ -4,7 +4,7 @@ Tiro = Classe:extend()
 function Tiro:new(x,y,direcao)
     self.posicao = Vetor(x,y)
     self.direcao = Vetor(direcao.x,direcao.y):norm() *10
-    self.velocidade = 2
+    self.velocidade = 1.5
     self.time = 0
 end
 

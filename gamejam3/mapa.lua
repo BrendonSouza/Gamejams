@@ -39,7 +39,6 @@ function Mapa:new()
         {GRAMA,GRAMA,GRAMA,GRAMA,GRAMA,GRAMA,GRAMA,GRAMA,GRAMA,TERRA,TERRA,TERRA,GRAMA},
         {GRAMA,GRAMA,GRAMA,GRAMA,GRAMA,GRAMA,GRAMA,GRAMA,GRAMA,GRAMA,GRAMA,GRAMA,GRAMA }
     }
-    print(#self.area)
 end
 
 function Mapa:update(dt)
@@ -75,10 +74,7 @@ function Mapa:draw()
    
 end
 
-function Mapa:retornaMeioDoCaminho()
-    
-    
-end
+
 
 
 
