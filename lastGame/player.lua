@@ -79,12 +79,12 @@ function Player:verificaColisao()
 end
 
 function love.keypressed(key)
-    -- if player.estaNoChao then
+    if player.estaNoChao then
         if key == "up" then
             player.collider:applyLinearImpulse(0, -player.aceleracao.y)
             player.estaNoChao = false
         end
-    -- end
+    end
 end
 
 

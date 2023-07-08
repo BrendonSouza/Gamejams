@@ -11,12 +11,12 @@ function Jogo:new()
    
     serras = {}
     self.fase = 1
-    self.timer = 80
+    self.timer = 60
     self.cronometro = 0
     self.gameOver = false
-    self.screenGameOver = love.graphics.newImage("assets/game_over.png")
     self.vezesJogada = 0
     self:carregaPeixes()
+    self.reset = false
 end
 
 function Jogo:update(dt)
@@ -28,12 +28,12 @@ function Jogo:update(dt)
         if(self.fase ==1) then
             gameMap =  sti("maps/mapa_duas_fases.lua")
             
-            
-
         elseif(self.fase == 2) then
             gameMap =  sti("maps/mapa_serras.lua")
             table.insert(serras,1, Serra(100,100,50,610))
             table.insert(serras,2, Serra(550,100,600,1300))
+            self:resetPlayer()
+
         end
         
         self:loadingLayers()
@@ -79,19 +79,19 @@ function Jogo:update(dt)
         end
     end
     if gameStatus == "gameOver" then
-        if love.keyboard.isDown("return") then
+        if self.reset == true then
             gameStatus = "loading"
             self.gameOver = false
-            self.timer = 80
+            self.timer = 60
             self.cronometro = 0
             world:destroy()
             loadWorld()
-            self:resetPlayer()
+            
             if(self.fase == 1) then
                 Enemy.collider =  world:newBSGRectangleCollider(Enemy.posicao.x, Enemy.posicao.y, 20, 15,3)
                 Enemy.collider:setType('static')
                 Enemy.collider:setFixedRotation(true)
-
+                self:resetPlayer()
                 peixes = {}
                 player.quantidadePeixes = 0
                 print(player.quantidadePeixes)
@@ -101,7 +101,7 @@ function Jogo:update(dt)
             if self.fase == 2 then
                 serras ={}
             end
-
+            self.reset = false
         end
     end
 
@@ -127,8 +127,6 @@ function Jogo:draw()
             end
 
         end
-    elseif(gameStatus == "gameOver") then
-        love.graphics.draw(self.screenGameOver, 0, 0)
     end
 end
 
@@ -206,9 +204,13 @@ function Jogo:fase2(dt)
         x = x-100
     end
     self.cronometro = self.cronometro + dt
-    if(self.cronometro > 20) then
+    if(self.cronometro > 40) then
         table.insert(serras, Serra(x,100,50,1300))
         self.cronometro = -200
+    end
+
+    if self.timer <0 then
+        gameStatus = "Win"
     end
 end
 
@@ -216,6 +218,7 @@ end
 
 function Jogo:resetPlayer()
     love.graphics.setDefaultFilter("nearest", "nearest")
+    player.position = Vetor(LARGURA_TELA/2, ALTURA_TELA/2)
 
     player.collider = world:newBSGRectangleCollider(player.position.x, player.position.y, 20, 13,1)
     player.collider:setFixedRotation(true)
@@ -226,5 +229,6 @@ function Jogo:resetPlayer()
     player.collider:setCollisionClass('Player')
     player.estaNoChao = true
     player.quantidadePeixes = 0
+    player.health =7
 end
 
