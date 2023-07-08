@@ -1,66 +1,104 @@
-LARGURA_TELA, ALTURA_TELA = 1200, 600
+LARGURA_TELA, ALTURA_TELA = 1200, 760
 
 function love.load()
     love.window.setTitle("Box Boxer")
     love.window.setMode(LARGURA_TELA, ALTURA_TELA, {resizable = false, vsync = true})
     Classe = require "libs/classic"
     Vetor = require "libs/vetor"
+    require "collisions_class"
     require "enemy"
     require "jogo"
     require "player"
+    require "heart"
+    require "peixe"
+    require "serra"
     wf = require "libs/windfield"
     sti = require "libs/sti"
-    gameMap = sti("maps/mapa.lua")
+    gameMap = sti("maps/mapa_duas_fases.lua")
     camera = require "libs/camera"
-    world = wf.newWorld(0, 0, true)
-    world:setGravity(0, 512)
-    grounds = {}
-    cam = camera()
-    if gameMap.layers["Ground"] then
-        for i, obj in pairs(gameMap.layers["Ground"].objects) do
-            grounds[i] = world:newRectangleCollider(obj.x, obj.y, obj.width, obj.height)
-            -- grounds[i]:setCollisionClass("Ground")
-            grounds[i]:setType('static')
-            table.insert(grounds, grounds[i])
-        end
-    end
-    jogo = Jogo()
+    Anim8 = require "libs/anim8"
 
+    loadWorld()
+    cam = camera()
+    jogo = Jogo()
+    gameStatus = "menu"
 
 end
 
 
 function love.update(dt)
-    jogo:update(dt)
-    world:update(dt)
-
-    --lock cam only in x axis
-    local h = love.graphics.getHeight()
-
-    cam:lookAt(player.position.x + 200, h/2 )
-
-    local w = love.graphics.getWidth()
-    if(cam.x < w/2) then
-        cam.x = w/2
-    end
-
-    local mapw = gameMap.width * gameMap.tilewidth
-    if(cam.x > (mapw - w/2)) then
-        cam.x = mapw - w/2
+    if gameStatus == "menu" then
+        updateMenu(dt)
+    else
+        jogo:update(dt)
+        world:update(dt)
+        looseVida()
     end
   
+end
 
+function loadWorld()
+    world = wf.newWorld(0, 0, true)
+    world:setGravity(0, 2600)
+    adicionaColisionClass()
+    recleft = world:newRectangleCollider(0,0,1,ALTURA_TELA)
+    recleft:setType('static')
+    recleft:setCollisionClass('Parede')
+    recright = world:newRectangleCollider(1400,0,1,ALTURA_TELA)
+    recright:setType('static')
+    recright:setCollisionClass('Parede')
+    vidas = {}
+    life()
 
 end
 
+
+
 function love.draw()
+    if(gameStatus == "menu") then
+        drawMenu()
+        
+    else
     cam:attach()
-        gameMap:drawLayer(gameMap.layers["blocos"])
-        gameMap:drawLayer(gameMap.layers["plataforma"])
-        gameMap:drawLayer(gameMap.layers["plataforma2"])
-        jogo:draw()
-        world:draw()
+
+    jogo:draw()
+    world:draw()
     cam:detach()
+    if jogo.fase == 2 then
+        love.graphics.setColor(0,0,0)
+        love.graphics.print(""..jogo.timer,700 , 50)
+        love.graphics.setColor(1,1,1)
+    end
+    for i, v in ipairs(vidas) do
+        v:draw()
+    end
+end
     -- love.graphics.print("Current FPS: "..tostring(love.timer.getFPS( )), 10, 10)
 
+end
+
+
+function life()
+    for i=1, 7 do
+        table.insert(vidas,i, heart(30 * i, 700))
+    end
+    
+end
+
+function looseVida()
+ 
+    if((player.health<7 and player.health>0) or player.health==0) then
+        vidas[player.health+1].isCheio = false
+    end    
+end
+
+
+function drawMenu()
+    love.graphics.print("Pressione Enter para iniciar", 300, 300)
+end
+
+function updateMenu(dt)
+    if love.keyboard.isDown("return") then
+        gameStatus = "loading"
+    end
 end

@@ -1,38 +1,32 @@
 Enemy = Classe:extend()
 
-function Enemy:new()
-    self.height = 50
-    self.width = 50
-    self.position = Vetor(LARGURA_TELA/2, ALTURA_TELA/2)
-    self.collider = world:newBSGRectangleCollider(self.position.x, self.position.y, self.width, self.height,1)
+function Enemy:new(x,y)
+    self.posicao = Vetor(x,y)
+    self.aceleracao = Vetor(80,0)
+    self.collider = world:newBSGRectangleCollider(self.posicao.x, self.posicao.y, 20, 15,3)
+    self.spritesheet = love.graphics.newImage("assets/enemy.png")
     self.collider:setFixedRotation(true)
-    self.collider:setLinearDamping(2)
-    self.spriteSheet = love.graphics.newImage("crab-sprite.png")
-    self.granades = {}
-    self.temporizadorAtack = 0
-    -- self.collider:setCollisionClass("Enemy")
+    self.collider:setType('static')
+    self.grid = Anim8.newGrid(24, 24, self.spritesheet:getWidth(), self.spritesheet:getHeight(),3)
+    self.animacao = {}
+    self.animacao.fly = Anim8.newAnimation(self.grid('1-3',1), 0.13)
+    self.direcao = -1
 
 end
 
 function Enemy:update(dt)
-    self.temporizadorAtack = self.temporizadorAtack + dt
-    if(self.temporizadorAtack > 1) then
-        self:disparaGranada()
-        self.temporizadorAtack = 0
+
+    if self.posicao.x >= 1350 then
+        self.direcao = -1
+    elseif self.posicao.x <= 930 then
+        self.direcao = 1
     end
-    self.position.x, self.position.y = self.collider:getPosition()
+    self.posicao.x = self.posicao.x + self.aceleracao.x*self.direcao * dt
+    self.collider:setPosition(self.posicao.x, self.posicao.y)
+    self.animacao.fly:update(dt)
 end
 
 
-function Enemy:draw()
-    love.graphics.rectangle("fill", self.position.x- self.width/2, self.position.y - self.height/2, self.width, self.height)
+function Enemy:draw() 
+    self.animacao.fly:draw(self.spritesheet, self.posicao.x-(12*self.direcao), self.posicao.y-15,nil,1*self.direcao,1)
 end
-
-function Enemy:disparaGranada()
-    local granada = world:newCircleCollider(self.position.x, self.position.y, 5)
-    --faz umm lançamento oblíquo
-    granada:setLinearVelocity(100, -500)
-    granada:applyAngularImpulse(7000)
-end
-
-
